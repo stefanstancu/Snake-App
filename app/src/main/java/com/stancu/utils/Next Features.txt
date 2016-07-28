@@ -1,0 +1,3 @@
+- Move to a time based snake update, to allow for other env. animations and such
+- Loading Screen during the init phase
+- Fix the tail when picking up an apple

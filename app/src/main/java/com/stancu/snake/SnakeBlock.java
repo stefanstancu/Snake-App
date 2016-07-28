@@ -2,6 +2,7 @@ package com.stancu.snake;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import com.stancu.game.Main;
 
 /**
  * Created by stefan on 03/06/16.
@@ -28,85 +29,94 @@ public class SnakeBlock {
     public int getY(){
         return y;
     }
+
     public Point getPosition(){
         return new Point(x,y);
     }
 
     public static void setSprites(){
-        //Called after the move logic, befor the draw
-        //This function will be called the most, as the logic for the adjacent blocks needs to be done.
-        //However this must on be called on the second block and the tail as all others remain the same
+        /**
+         * Called at the end of the snake update
+         * This function only affects the tail,
+         * the neck and the head as the rest of snakeBlocks do not change per update
+         **/
 
-        //The head
-        Snake.snakeBlocks[0].image=Snake.snakeHead[Snake.direction-1];
+        //Setting the head sprite in the correct direction
+        //Main.snake.snakeBlocks[0].image=Main.snake.snakeHead[Main.snake.direction-1];
+        Main.snake.snakeBlocks[0].image=null;
 
-        //The second block
-        SnakeBlock head = Snake.snakeBlocks[0];
-        SnakeBlock neck = Snake.snakeBlocks[1];
-        SnakeBlock third = Snake.snakeBlocks[2];
+        //Setting the neck sprite in the correct direction
+        SnakeBlock head = Main.snake.snakeBlocks[0];
+        SnakeBlock neck = Main.snake.snakeBlocks[1];
+        SnakeBlock third = Main.snake.snakeBlocks[2];
 
         int bodyDir = 0;
-        int dir = Snake.direction;
+        int dir = Main.snake.direction;
 
         switch (neck.getX()-third.getX()){
             case -1:
-                bodyDir = 2;
+                bodyDir = Snake.DIRECTION_RIGHT;
                 break;
             case 0:
                 switch (neck.getY()-third.getY()){
                     case -1:
-                        bodyDir=3;
+                        bodyDir=Snake.DIRECTION_DOWN;
                         break;
                     case 1:
-                        bodyDir=1;
+                        bodyDir=Snake.DIRECTION_UP;
                         break;
                 }
                 break;
             case 1:
-                bodyDir = 4;
+                bodyDir = Snake.DIRECTION_LEFT;
                 break;
         }
-        if((bodyDir==1&&dir==3)||(bodyDir==3&&dir==1)){
-            neck.image=Snake.snakeBodyV;
+        if((bodyDir==Snake.DIRECTION_UP&&dir==Snake.DIRECTION_DOWN)||(bodyDir==Snake.DIRECTION_DOWN&&dir==Snake.DIRECTION_UP)){
+            neck.image=Main.snake.snakeBodyV;
         }
-        if((bodyDir==2&&dir==4)||(bodyDir==4&&dir==2)){
-            neck.image=Snake.snakeBodyH;
+         else if((bodyDir==Snake.DIRECTION_RIGHT&&dir==Snake.DIRECTION_LEFT)||(bodyDir==Snake.DIRECTION_LEFT&&dir==Snake.DIRECTION_RIGHT)){
+            neck.image=Main.snake.snakeBodyH;
         }
-        if((bodyDir==1&&dir==2)||(bodyDir==2&&dir==1)){
-            neck.image=Snake.snakeBend[3];
+        else if((bodyDir==Snake.DIRECTION_UP&&dir==Snake.DIRECTION_RIGHT)||(bodyDir==Snake.DIRECTION_RIGHT&&dir==Snake.DIRECTION_UP)){
+            neck.image=Main.snake.snakeBend[3];
         }
-        if((bodyDir==1&&dir==4)||(bodyDir==4&&dir==1)){
-            neck.image=Snake.snakeBend[2];
+        else if((bodyDir==Snake.DIRECTION_UP&&dir==Snake.DIRECTION_LEFT)||(bodyDir==Snake.DIRECTION_LEFT&&dir==Snake.DIRECTION_UP)){
+            neck.image=Main.snake.snakeBend[2];
         }
-        if((bodyDir==2&&dir==3)||(bodyDir==3&&dir==2)){
-            neck.image=Snake.snakeBend[0];
+        else if((bodyDir==Snake.DIRECTION_RIGHT&&dir==Snake.DIRECTION_DOWN)||(bodyDir==Snake.DIRECTION_DOWN&&dir==Snake.DIRECTION_RIGHT)){
+            neck.image=Main.snake.snakeBend[0];
         }
-        if((bodyDir==4&&dir==3)||(bodyDir==3&&dir==4)){
-            neck.image=Snake.snakeBend[1];
+        else if((bodyDir==Snake.DIRECTION_LEFT&&dir==Snake.DIRECTION_DOWN)||(bodyDir==Snake.DIRECTION_DOWN&&dir==Snake.DIRECTION_LEFT)){
+            neck.image=Main.snake.snakeBend[1];
         }
 
-        //The Tail
+        //Setting the tail sprite in the correct direction
 
-        SnakeBlock tail = Snake.snakeBlocks[Snake.snakeBlocks.length-1];
-        SnakeBlock preTail = Snake.snakeBlocks[Snake.snakeBlocks.length-2];
+        SnakeBlock tail = Main.snake.snakeBlocks[Main.snake.snakeBlocks.length-1];
+        SnakeBlock preTail = Main.snake.snakeBlocks[Main.snake.snakeBlocks.length-2];
         switch (tail.getX()-preTail.getX()){
             case 1:
-                tail.image = Snake.snakeTail[1];
+                tail.image = Main.snake.snakeTail[1];
+                Main.snake.tailDirection = Snake.DIRECTION_RIGHT;
                 break;
             case 0:
                 switch (tail.getY()-preTail.getY()){
                     case 1:
-                        tail.image = Snake.snakeTail[2];
+                        tail.image = Main.snake.snakeTail[2];
+                        Main.snake.tailDirection = Snake.DIRECTION_DOWN;
                         break;
                     case -1:
-                        tail.image = Snake.snakeTail[0];
+                        tail.image = Main.snake.snakeTail[0];
+                        Main.snake.tailDirection = Snake.DIRECTION_UP;
                         break;
                 }
                 break;
             case -1:
-                tail.image = Snake.snakeTail[3];
+                tail.image = Main.snake.snakeTail[3];
+                Main.snake.tailDirection = Snake.DIRECTION_LEFT;
                 break;
         }
-
+        //temporary disabling
+        Main.snake.snakeBlocks[Main.snake.snakeBlocks.length-1].image = null;
     }
 }
